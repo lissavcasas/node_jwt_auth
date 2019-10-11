@@ -1,12 +1,23 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = express();
+const verifyToken = require('./middlewares/verifyToken');
+const dotenv = require('');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const passportLocal = require('');
+const passportJwt = require('passport-jwt');
+
+let JwtStrategy = passportJwt.Strategy,
+    ExtractJwt = passportJwt.ExtractJwt;
+
+
 
 app.get('/api', (req, res) => {
   res.json({ message: ' Welcome to the API' });
 });
 
-//create a route that I ewant to protect. Add middleware (verifytoken)
+// Create a route that I want to protect. Add middleware (verifytoken)
 app.post('/api/posts', verifyToken, (req, res) => {
   jwt.verify(req.token, 'secretKey', (err, authData) => { //authData: user and email
     if (err) {
@@ -33,25 +44,7 @@ app.post('/api/login', (req, res) => {
   }); //async, send it along the payload (3 parametros)
 });
 
-//Verify token
-function verifyToken(req, res, next) {
-  // Get auth header value
-  const bearerHeader = req.headers['authorization'];
-  // Ckeck if bearer is undefined
-  if (typeof bearerHeader !== 'undefined') {
-    //Split at the space
-    const bearer = bearerHeader.split(' ');
-    //Get token from array
-    const bearerToken = bearer[1];
-    // Set the token
-    req.token = bearerHeader;
-    //Next middleware
-    next();
-  } else {
-    // Forbidden
-    res.sendStatus(403);
-  }
-};
+
 
 
 const PORT = 5000;
