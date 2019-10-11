@@ -9,10 +9,10 @@ app.get('/api', (req, res) => {
 //create a route that I ewant to protect. Add middleware (verifytoken)
 app.post('/api/posts', verifyToken, (req, res) => {
   jwt.verify(req.token, 'secretKey', (err, authData) => { //authData: user and email
-    if(err) {
+    if (err) {
       res.sendStatus(403);
     } else {
-      res.json({ 
+      res.json({
         message: 'Post created',
         authData
       });
@@ -28,7 +28,7 @@ app.post('/api/login', (req, res) => {
     email: 'meli@gmail.com'
   }
 
-  jwt.sign({ user }, 'secretKey', (err, token) => {
+  jwt.sign({ user }, 'secretKey', { expiresIn: '30s' }, (err, token) => {
     res.json({ token })
   }); //async, send it along the payload (3 parametros)
 });
@@ -38,7 +38,7 @@ function verifyToken(req, res, next) {
   // Get auth header value
   const bearerHeader = req.headers['authorization'];
   // Ckeck if bearer is undefined
-  if(typeof bearerHeader !== 'undefined') {
+  if (typeof bearerHeader !== 'undefined') {
     //Split at the space
     const bearer = bearerHeader.split(' ');
     //Get token from array
