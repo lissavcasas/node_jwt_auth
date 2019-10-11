@@ -2,15 +2,20 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = express();
 const verifyToken = require('./middlewares/verifyToken');
-const dotenv = require('');
-const passport = require('passport');
+const dotenv = require('dotenv');
+dotenv.config();
+
+/* const passport = require('passport');
+const passportLocal = require('passport-local');
 const LocalStrategy = require('passport-local').Strategy;
-const passportLocal = require('');
 const passportJwt = require('passport-jwt');
-
 let JwtStrategy = passportJwt.Strategy,
-    ExtractJwt = passportJwt.ExtractJwt;
+  ExtractJwt = passportJwt.ExtractJwt; */
 
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 
 app.get('/api', (req, res) => {
@@ -39,15 +44,19 @@ app.post('/api/login', (req, res) => {
     email: 'meli@gmail.com'
   }
 
-  jwt.sign({ user }, 'secretKey', { expiresIn: '30s' }, (err, token) => {
+  jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '30s' }, (err, token) => {
     res.json({ token })
   }); //async, send it along the payload (3 parametros)
 });
 
 
 
+/* passport.use(new LocalStrategy({
+  usernameField: "username",
+  passwordField: "password",
+  session: false
+}, (username, password, done) => {
+  //callback de verificación
+})); */
 
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+/*  */
